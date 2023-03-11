@@ -1,6 +1,5 @@
 // получаем необходимые элементы
 const signinForm = document.getElementById("signin__form");
-const signinBtn = document.getElementById("signin__btn");
 const welcomeBlock = document.getElementById("welcome");
 const welcomeUserId = document.getElementById("user_id");
 
@@ -18,6 +17,13 @@ function sendRequest(url, method, body = null) {
         });
 }
 
+// функция для обновления блока приветствия
+function showWelcomeBlock(userId) {
+    welcomeUserId.textContent = userId;
+    welcomeBlock.classList.add("welcome_active");
+    document.getElementById("signin").classList.remove("signin_active");
+}
+
 // обработчик отправки формы
 signinForm.addEventListener("submit", (event) => {
     event.preventDefault(); // отменяем стандартное поведение формы
@@ -33,9 +39,8 @@ signinForm.addEventListener("submit", (event) => {
         if (data.success) {
             // если авторизация прошла успешно
             localStorage.setItem("user_id", data.user_id); // сохраняем id пользователя в локальное хранилище
-            welcomeUserId.textContent = data.user_id; // устанавливаем id пользователя в блок приветствия
-            welcomeBlock.classList.add("welcome_active"); // отображаем блок приветствия
-            document.getElementById("signin").classList.remove("signin_active"); // скрываем форму авторизации
+            showWelcomeBlock(data.user_id); // обновляем блок приветствия
+            signinForm.reset(); // сбрасываем форму
         } else {
             // если авторизация не удалась
             alert("Неверный логин/пароль");
@@ -47,7 +52,5 @@ signinForm.addEventListener("submit", (event) => {
 const userId = localStorage.getItem("user_id");
 if (userId) {
     // если id есть, отображаем блок приветствия
-    welcomeUserId.textContent = userId;
-    welcomeBlock.classList.add("welcome_active");
-    document.getElementById("signin").classList.remove("signin_active"); // скрываем форму авторизации
+    showWelcomeBlock(userId); // обновляем блок приветствия
 }
